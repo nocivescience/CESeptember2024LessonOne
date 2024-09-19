@@ -16,6 +16,7 @@
             align-items: center;
             position: absolute;
             cursor: grab;
+            user-select: none;
         }
 
         body {
@@ -25,15 +26,27 @@
             justify-content: center;
             align-items: center;
         }
+
+        #draggable.active {
+            background-color: #2196F3;
+        }
+        .order{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 
 <body>
-    <div id="draggable">Arrástrame</div>
+    <div id="draggable"></div>
 
     <script>
         const draggable = document.getElementById('draggable');
         let offsetX, offsetY;
+        let angle = 0;
+        draggable.innerText = 'Suéltame';
 
         draggable.addEventListener('mousedown', (e) => {
             offsetX = e.clientX - draggable.getBoundingClientRect().left;
@@ -44,15 +57,27 @@
         });
 
         function onMouseMove(e) {
-            draggable.style.left = `${e.clientX - offsetX}px`;
-            draggable.style.top = `${e.clientY - offsetY}px`;
+            let left = e.clientX - offsetX;
+            let top = e.clientY - offsetY;
+            draggable.style.left = `${left}px`;
+            draggable.style.top = `${top}px`;
+            draggable.classList.add('active');
+            draggable.style.cursor = 'grabbing';
+            draggable.innerHTML = `<div class="order"><div>Agárrame</div>X: ${left.toFixed(2)} Y: ${top.toFixed(2)}</div>`;
+            rotate();
         }
 
         function onMouseUp() {
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
+            draggable.classList.remove('active');
+            draggable.style.cursor = 'grab';
+            draggable.innerText = 'Suéltame';
         }
-
+        function rotate(){
+            angle += 90/10;
+            draggable.style.transform = `rotate(${angle}deg)`;
+        }
     </script>
 </body>
 
